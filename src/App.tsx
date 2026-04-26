@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import GardenDetailPage from "./pages/GardenDetailPage";
 import GardenRegisterPage from "./pages/GardenRegisterPage";
+import SharePage from "./pages/SharePage";
 
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/garden-register" element={<GardenRegisterPage />} />
         <Route path="/gardens/:gardenId" element={<GardenDetailPage />} />
+        <Route path="/share" element={<SharePage />} />
 
         <Route path="/guide" element={<GuidePage />} />
         <Route path="/my" element={<MyPage />} />

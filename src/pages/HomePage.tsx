@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import TopTabs from "../components/TopTabs";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 const gardens = [
@@ -30,26 +31,25 @@ export default function HomePage() {
   return (
     <div style={pageStyle}>
       <div style={contentStyle}>
+        
+        {/* 헤더 */}
         <header style={headerStyle}>
           <h1 style={titleStyle}>GreenLink 🌱</h1>
           <p style={subTitleStyle}>지역 공유텃밭 연결·관리 플랫폼</p>
         </header>
 
-        <div style={topTabStyle}>
-        <Route path="/guide" element={<GuidePage />} />
-        <Route path="/my" element={<MyPage />} />
-        <Route path="/mentor" element={<MentorPage />} />
-        <Route path="/log" element={<LogPage />} />
-        </div>
+        {/* 상단 탭 */}
+        <TopTabs />
 
+        {/* 안내 카드 */}
         <section style={heroStyle}>
-          <h2 style={heroTitleStyle}>
+          <h2 style={heroTitle}>
             유휴공간을 공유텃밭으로
             <br />
             연결해보세요
           </h2>
 
-          <p style={heroTextStyle}>
+          <p style={heroText}>
             함께 심고, 함께 기록하고,
             <br />
             수확물을 지역 주민과 나누는
@@ -58,7 +58,8 @@ export default function HomePage() {
           </p>
         </section>
 
-        <section style={mapBoxStyle}>
+        {/* 지도 */}
+        <section style={mapStyle}>
           <MapContainer
             center={[35.335, 129.037]}
             zoom={12}
@@ -66,17 +67,17 @@ export default function HomePage() {
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-            {gardens.map((garden) => (
-              <Marker key={garden.id} position={[garden.lat, garden.lng]}>
+            {gardens.map((g) => (
+              <Marker key={g.id} position={[g.lat, g.lng]}>
                 <Popup>
-                  <strong>{garden.title}</strong>
+                  <strong>{g.title}</strong>
                   <br />
-                  {garden.location}
+                  {g.location}
                   <br />
-                  {garden.crops.join(", ")}
+                  {g.crops.join(", ")}
                   <br />
-                  <button onClick={() => navigate(`/gardens/${garden.id}`)}>
-                    상세 보기
+                  <button onClick={() => navigate(`/gardens/${g.id}`)}>
+                    상세보기
                   </button>
                 </Popup>
               </Marker>
@@ -84,31 +85,31 @@ export default function HomePage() {
           </MapContainer>
         </section>
 
-        <h2 style={sectionTitleStyle}>공유텃밭</h2>
+        {/* 텃밭 리스트 */}
+        <h2 style={sectionTitle}>공유텃밭</h2>
 
-        <div style={{ display: "grid", gap: 14 }}>
-          {gardens.map((garden) => (
-            <div
-              key={garden.id}
-              onClick={() => navigate(`/gardens/${garden.id}`)}
-              style={gardenCardStyle}
-            >
-              <h3 style={gardenTitleStyle}>{garden.title}</h3>
+        {gardens.map((g) => (
+          <div
+            key={g.id}
+            onClick={() => navigate(`/gardens/${g.id}`)}
+            style={cardStyle}
+          >
+            <h3 style={cardTitle}>{g.title}</h3>
 
-              <p style={gardenTextStyle}>📍 {garden.location}</p>
-              <p style={gardenTextStyle}>🌿 {garden.crops.join(", ")}</p>
+            <p style={cardText}>📍 {g.location}</p>
+            <p style={cardText}>🌿 {g.crops.join(", ")}</p>
 
-              <div style={gardenMetaStyle}>
-                <span>👥 참여 {garden.members}명</span>
-                <span>{garden.recent}</span>
-              </div>
+            <div style={cardBottom}>
+              <span>👥 {g.members}명</span>
+              <span>{g.recent}</span>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
 
+        {/* 등록 버튼 */}
         <button
           onClick={() => navigate("/garden-register")}
-          style={bigAddButtonStyle}
+          style={mainButton}
         >
           + 공유텃밭 등록
         </button>
@@ -117,34 +118,7 @@ export default function HomePage() {
   );
 }
 
-function TopTab({
-  label,
-  active = false,
-  onClick,
-}: {
-  label: string;
-  active?: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        flex: 1,
-        padding: "13px 0",
-        border: "none",
-        background: "transparent",
-        color: active ? "#2f6f44" : "#7d8b80",
-        fontWeight: active ? 900 : 700,
-        fontSize: 14,
-        borderBottom: active ? "4px solid #3f8f4f" : "4px solid transparent",
-        cursor: "pointer",
-      }}
-    >
-      {label}
-    </button>
-  );
-}
+/* 스타일 */
 
 const pageStyle = {
   minHeight: "100vh",
@@ -175,15 +149,6 @@ const subTitleStyle = {
   fontSize: 15,
 };
 
-const topTabStyle = {
-  display: "flex",
-  background: "#ffffff",
-  borderRadius: 18,
-  marginBottom: 20,
-  overflow: "hidden",
-  boxShadow: "0 5px 16px rgba(0,0,0,0.06)",
-};
-
 const heroStyle = {
   background: "linear-gradient(135deg, #e8f5e9, #ffffff)",
   borderRadius: 28,
@@ -193,75 +158,69 @@ const heroStyle = {
   textAlign: "center" as const,
 };
 
-const heroTitleStyle = {
-  fontSize: 24,
+const heroTitle = {
+  fontSize: 22,
   fontWeight: 900,
   color: "#23452f",
   lineHeight: 1.4,
-  margin: "0 0 12px",
 };
 
-const heroTextStyle = {
+const heroText = {
   fontSize: 15,
   color: "#5f6f64",
   lineHeight: 1.7,
-  maxWidth: 280,
-  margin: "0 auto",
+  marginTop: 10,
 };
 
-const mapBoxStyle = {
-  height: 240,
-  borderRadius: 24,
+const mapStyle = {
+  height: 220,
+  borderRadius: 20,
   overflow: "hidden",
-  marginBottom: 24,
-  boxShadow: "0 8px 22px rgba(0,0,0,0.08)",
-  background: "#dbe9d4",
+  marginBottom: 20,
+  boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
 };
 
-const sectionTitleStyle = {
-  fontSize: 22,
-  margin: "0 0 12px",
-  color: "#213c2b",
+const sectionTitle = {
+  fontSize: 20,
+  marginBottom: 10,
 };
 
-const gardenCardStyle = {
-  background: "#ffffff",
-  borderRadius: 22,
-  padding: 20,
-  boxShadow: "0 6px 18px rgba(0,0,0,0.07)",
+const cardStyle = {
+  background: "#fff",
+  padding: 16,
+  borderRadius: 16,
+  marginBottom: 12,
   cursor: "pointer",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
 };
 
-const gardenTitleStyle = {
+const cardTitle = {
   margin: 0,
-  fontSize: 21,
-  color: "#233d2b",
+  fontSize: 18,
+  fontWeight: 800,
 };
 
-const gardenTextStyle = {
-  margin: "9px 0",
-  color: "#68766b",
-  fontSize: 16,
+const cardText = {
+  margin: "6px 0",
+  color: "#666",
 };
 
-const gardenMetaStyle = {
+const cardBottom = {
   display: "flex",
   justifyContent: "space-between",
-  gap: 8,
-  marginTop: 14,
   fontSize: 13,
-  color: "#5f6f64",
+  marginTop: 10,
 };
 
-const bigAddButtonStyle = {
+const mainButton = {
   width: "100%",
-  padding: 18,
-  borderRadius: 22,
+  padding: 16,
   background: "#3f8f4f",
   color: "white",
   border: "none",
-  marginTop: 28,
-  fontSize: 18,
-  fontWeight: 900,
+  borderRadius: 16,
+  marginTop: 20,
+  fontSize: 16,
+  fontWeight: 800,
   cursor: "pointer",
 };
