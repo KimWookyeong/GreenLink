@@ -31,9 +31,17 @@ export default function HomePage() {
     <div style={pageStyle}>
       <div style={contentStyle}>
         <header style={headerStyle}>
-          <h1 style={logoStyle}>GreenLink 🌱</h1>
+          <h1 style={titleStyle}>GreenLink 🌱</h1>
           <p style={subTitleStyle}>지역 공유텃밭 연결·관리 플랫폼</p>
         </header>
+
+        <div style={topTabStyle}>
+          <TopTab label="가이드" onClick={() => alert("가이드 페이지는 준비 중입니다.")} />
+          <TopTab label="파밍" active onClick={() => navigate("/home")} />
+          <TopTab label="마이" onClick={() => alert("마이 페이지는 준비 중입니다.")} />
+          <TopTab label="멘토" onClick={() => alert("멘토 페이지는 준비 중입니다.")} />
+          <TopTab label="로그" onClick={() => alert("로그 페이지는 준비 중입니다.")} />
+        </div>
 
         <section style={heroStyle}>
           <h2 style={heroTitleStyle}>
@@ -77,16 +85,7 @@ export default function HomePage() {
           </MapContainer>
         </section>
 
-        <div style={sectionHeaderStyle}>
-          <h2 style={sectionTitleStyle}>공유텃밭</h2>
-
-          <button
-            onClick={() => navigate("/garden-register")}
-            style={smallAddButtonStyle}
-          >
-            + 등록
-          </button>
-        </div>
+        <h2 style={sectionTitleStyle}>공유텃밭</h2>
 
         <div style={{ display: "grid", gap: 14 }}>
           {gardens.map((garden) => (
@@ -115,72 +114,58 @@ export default function HomePage() {
           + 공유텃밭 등록
         </button>
       </div>
-
-      <BottomTabs />
     </div>
   );
 }
 
-function BottomTabs() {
-  return (
-    <nav style={bottomTabStyle}>
-      <TabItem label="가이드" icon="🌱" />
-      <TabItem label="파밍" icon="🗺️" active />
-      <TabItem label="마이" icon="🏡" />
-      <TabItem label="멘토" icon="💡" />
-      <TabItem label="로그" icon="📊" />
-    </nav>
-  );
-}
-
-function TabItem({
+function TopTab({
   label,
-  icon,
   active = false,
+  onClick,
 }: {
   label: string;
-  icon: string;
   active?: boolean;
+  onClick: () => void;
 }) {
   return (
-    <div style={tabItemStyle}>
-      <div style={{ fontSize: 22 }}>{icon}</div>
-      <div
-        style={{
-          fontSize: 13,
-          fontWeight: active ? 900 : 700,
-          color: active ? "#2f6f44" : "#8a958c",
-          marginTop: 4,
-        }}
-      >
-        {label}
-      </div>
-
-      {active && <div style={activeBarStyle} />}
-    </div>
+    <button
+      onClick={onClick}
+      style={{
+        flex: 1,
+        padding: "13px 0",
+        border: "none",
+        background: "transparent",
+        color: active ? "#2f6f44" : "#7d8b80",
+        fontWeight: active ? 900 : 700,
+        fontSize: 14,
+        borderBottom: active ? "4px solid #3f8f4f" : "4px solid transparent",
+        cursor: "pointer",
+      }}
+    >
+      {label}
+    </button>
   );
 }
 
 const pageStyle = {
   minHeight: "100vh",
   background: "#f4f8f1",
-  padding: "20px 20px 92px",
-  boxSizing: "border-box" as const,
 };
 
 const contentStyle = {
   maxWidth: 420,
   margin: "0 auto",
+  padding: 20,
 };
 
 const headerStyle = {
   textAlign: "center" as const,
-  marginBottom: 22,
+  marginBottom: 18,
 };
 
-const logoStyle = {
+const titleStyle = {
   margin: 0,
-  fontSize: 36,
+  fontSize: 34,
   color: "#1f3d2b",
   fontWeight: 900,
 };
@@ -189,6 +174,15 @@ const subTitleStyle = {
   color: "#5f6f64",
   marginTop: 8,
   fontSize: 15,
+};
+
+const topTabStyle = {
+  display: "flex",
+  background: "#ffffff",
+  borderRadius: 18,
+  marginBottom: 20,
+  overflow: "hidden",
+  boxShadow: "0 5px 16px rgba(0,0,0,0.06)",
 };
 
 const heroStyle = {
@@ -225,27 +219,10 @@ const mapBoxStyle = {
   background: "#dbe9d4",
 };
 
-const sectionHeaderStyle = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  marginBottom: 12,
-};
-
 const sectionTitleStyle = {
   fontSize: 22,
-  margin: 0,
+  margin: "0 0 12px",
   color: "#213c2b",
-};
-
-const smallAddButtonStyle = {
-  border: "none",
-  background: "#3f8f4f",
-  color: "white",
-  borderRadius: 999,
-  padding: "9px 14px",
-  fontWeight: 800,
-  cursor: "pointer",
 };
 
 const gardenCardStyle = {
@@ -288,38 +265,4 @@ const bigAddButtonStyle = {
   fontSize: 18,
   fontWeight: 900,
   cursor: "pointer",
-};
-
-const bottomTabStyle = {
-  position: "fixed" as const,
-  bottom: 0,
-  left: 0,
-  right: 0,
-  height: 74,
-  background: "white",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-around",
-  borderTop: "1px solid #e5e5e5",
-  boxShadow: "0 -4px 18px rgba(0,0,0,0.06)",
-  zIndex: 999,
-};
-
-const tabItemStyle = {
-  flex: 1,
-  height: "100%",
-  display: "flex",
-  flexDirection: "column" as const,
-  alignItems: "center",
-  justifyContent: "center",
-  position: "relative" as const,
-};
-
-const activeBarStyle = {
-  position: "absolute" as const,
-  bottom: 0,
-  width: "70%",
-  height: 4,
-  borderRadius: 999,
-  background: "#3f8f4f",
 };
