@@ -43,6 +43,11 @@ export default function GardenRegisterPage() {
     lng: 129.037,
   });
 
+  const handleImageUpload = (file?: File) => {
+    if (!file) return;
+    setPreview(URL.createObjectURL(file));
+  };
+
   const handleSave = async () => {
     if (!title || !location || !crops) {
       alert("텃밭 이름, 주소/위치, 재배 작물을 입력해주세요.");
@@ -98,9 +103,7 @@ export default function GardenRegisterPage() {
           />
 
           <label style={labelStyle}>지도에서 위치 선택</label>
-          <p style={guideTextStyle}>
-            지도를 클릭하면 텃밭 위치 핀이 이동합니다.
-          </p>
+          <p style={guideTextStyle}>지도를 클릭하면 텃밭 위치 핀이 이동합니다.</p>
 
           <div style={mapBoxStyle}>
             <MapContainer
@@ -109,11 +112,7 @@ export default function GardenRegisterPage() {
               style={{ height: "100%", width: "100%" }}
             >
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-
-              <LocationPicker
-                position={position}
-                setPosition={setPosition}
-              />
+              <LocationPicker position={position} setPosition={setPosition} />
             </MapContainer>
           </div>
 
@@ -138,19 +137,30 @@ export default function GardenRegisterPage() {
           />
 
           <label style={labelStyle}>텃밭 사진</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (!file) return;
-              setPreview(URL.createObjectURL(file));
-            }}
-          />
+          <div style={photoButtonRowStyle}>
+            <label style={photoButtonStyle}>
+              📷 카메라 촬영
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={(e) => handleImageUpload(e.target.files?.[0])}
+                style={{ display: "none" }}
+              />
+            </label>
 
-          {preview && (
-            <img src={preview} alt="미리보기" style={previewStyle} />
-          )}
+            <label style={photoButtonStyle}>
+              🖼 갤러리 선택
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleImageUpload(e.target.files?.[0])}
+                style={{ display: "none" }}
+              />
+            </label>
+          </div>
+
+          {preview && <img src={preview} alt="미리보기" style={previewStyle} />}
 
           <button onClick={handleSave} style={buttonStyle}>
             등록하기
@@ -165,41 +175,17 @@ export default function GardenRegisterPage() {
   );
 }
 
-const pageStyle = {
-  minHeight: "100vh",
-  background: "#f4f8f1",
-};
-
-const contentStyle = {
-  maxWidth: 520,
-  margin: "0 auto",
-  padding: 20,
-};
-
-const headerStyle = {
-  textAlign: "center" as const,
-  marginBottom: 18,
-};
-
-const titleStyle = {
-  margin: 0,
-  color: "#1f3d2b",
-  fontSize: 34,
-  fontWeight: 900,
-};
-
-const subTitleStyle = {
-  color: "#5f6f64",
-  lineHeight: 1.6,
-};
-
+const pageStyle = { minHeight: "100vh", background: "#f4f8f1" };
+const contentStyle = { maxWidth: 520, margin: "0 auto", padding: 20 };
+const headerStyle = { textAlign: "center" as const, marginBottom: 18 };
+const titleStyle = { margin: 0, color: "#1f3d2b", fontSize: 34, fontWeight: 900 };
+const subTitleStyle = { color: "#5f6f64", lineHeight: 1.6 };
 const cardStyle = {
   background: "white",
   borderRadius: 24,
   padding: 24,
   boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
 };
-
 const labelStyle = {
   display: "block",
   marginTop: 16,
@@ -208,7 +194,6 @@ const labelStyle = {
   fontWeight: 800,
   fontSize: 16,
 };
-
 const inputStyle = {
   width: "100%",
   padding: 14,
@@ -217,26 +202,14 @@ const inputStyle = {
   boxSizing: "border-box" as const,
   fontSize: 15,
 };
-
-const textareaStyle = {
-  ...inputStyle,
-  height: 110,
-  resize: "none" as const,
-};
-
-const guideTextStyle = {
-  margin: "0 0 10px",
-  color: "#6f7d72",
-  fontSize: 14,
-};
-
+const textareaStyle = { ...inputStyle, height: 110, resize: "none" as const };
+const guideTextStyle = { margin: "0 0 10px", color: "#6f7d72", fontSize: 14 };
 const mapBoxStyle = {
   height: 260,
   borderRadius: 18,
   overflow: "hidden",
   border: "1px solid #d6ddd4",
 };
-
 const locationInfoStyle = {
   marginTop: 10,
   padding: 10,
@@ -247,7 +220,22 @@ const locationInfoStyle = {
   fontWeight: 700,
   textAlign: "center" as const,
 };
-
+const photoButtonRowStyle = {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: 10,
+  marginTop: 10,
+};
+const photoButtonStyle = {
+  padding: 14,
+  borderRadius: 14,
+  border: "1px solid #3f8f4f",
+  background: "#ffffff",
+  color: "#2f6f44",
+  fontWeight: 900,
+  textAlign: "center" as const,
+  cursor: "pointer",
+};
 const previewStyle = {
   width: "100%",
   maxHeight: 240,
@@ -255,7 +243,6 @@ const previewStyle = {
   borderRadius: 16,
   marginTop: 12,
 };
-
 const buttonStyle = {
   width: "100%",
   padding: 16,
@@ -268,7 +255,6 @@ const buttonStyle = {
   fontWeight: 900,
   cursor: "pointer",
 };
-
 const subButtonStyle = {
   width: "100%",
   padding: 14,
