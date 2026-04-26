@@ -1,8 +1,33 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { push, ref } from "firebase/database";
+import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 import { db } from "../lib/firebase";
 import TopTabs from "../components/TopTabs";
+
+type Position = {
+  lat: number;
+  lng: number;
+};
+
+function LocationPicker({
+  position,
+  setPosition,
+}: {
+  position: Position;
+  setPosition: (position: Position) => void;
+}) {
+  useMapEvents({
+    click(e) {
+      setPosition({
+        lat: e.latlng.lat,
+        lng: e.latlng.lng,
+      });
+    },
+  });
+
+  return <Marker position={[position.lat, position.lng]} />;
+}
 
 export default function GardenRegisterPage() {
   const navigate = useNavigate();
@@ -11,13 +36,16 @@ export default function GardenRegisterPage() {
   const [location, setLocation] = useState("");
   const [crops, setCrops] = useState("");
   const [description, setDescription] = useState("");
-  const [lat, setLat] = useState("35.335");
-  const [lng, setLng] = useState("129.037");
   const [preview, setPreview] = useState<string | null>(null);
+
+  const [position, setPosition] = useState<Position>({
+    lat: 35.335,
+    lng: 129.037,
+  });
 
   const handleSave = async () => {
     if (!title || !location || !crops) {
-      alert("텃밭 이름, 위치, 재배 작물을 입력해주세요.");
+      alert("텃밭 이름, 주소/위치, 재배 작물을 입력해주세요.");
       return;
     }
 
@@ -26,8 +54,8 @@ export default function GardenRegisterPage() {
       location,
       crops,
       description,
-      lat: Number(lat),
-      lng: Number(lng),
+      lat: position.lat,
+      lng: position.lng,
       members: 1,
       recent: "새 공유텃밭이 등록되었습니다.",
       imageUrl: preview || "",
@@ -44,7 +72,9 @@ export default function GardenRegisterPage() {
         <header style={headerStyle}>
           <h1 style={titleStyle}>공유텃밭 등록</h1>
           <p style={subTitleStyle}>
-            유휴공간이나 함께 관리할 텃밭을 등록해주세요.
+            지도에서 텃밭 위치를 선택하고,
+            <br />
+            공유할 텃밭 정보를 입력해주세요.
           </p>
         </header>
 
@@ -67,24 +97,28 @@ export default function GardenRegisterPage() {
             onChange={(e) => setLocation(e.target.value)}
           />
 
-          <div style={rowStyle}>
-            <div style={{ flex: 1 }}>
-              <label style={labelStyle}>위도</label>
-              <input
-                style={inputStyle}
-                value={lat}
-                onChange={(e) => setLat(e.target.value)}
-              />
-            </div>
+          <label style={labelStyle}>지도에서 위치 선택</label>
+          <p style={guideTextStyle}>
+            지도를 클릭하면 텃밭 위치 핀이 이동합니다.
+          </p>
 
-            <div style={{ flex: 1 }}>
-              <label style={labelStyle}>경도</label>
-              <input
-                style={inputStyle}
-                value={lng}
-                onChange={(e) => setLng(e.target.value)}
+          <div style={mapBoxStyle}>
+            <MapContainer
+              center={[position.lat, position.lng]}
+              zoom={13}
+              style={{ height: "100%", width: "100%" }}
+            >
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+              <LocationPicker
+                position={position}
+                setPosition={setPosition}
               />
-            </div>
+            </MapContainer>
+          </div>
+
+          <div style={locationInfoStyle}>
+            선택 위치: {position.lat.toFixed(5)}, {position.lng.toFixed(5)}
           </div>
 
           <label style={labelStyle}>재배 작물</label>
@@ -131,29 +165,50 @@ export default function GardenRegisterPage() {
   );
 }
 
-const pageStyle = { minHeight: "100vh", background: "#f4f8f1" };
-const contentStyle = { maxWidth: 520, margin: "0 auto", padding: 20 };
-const headerStyle = { textAlign: "center" as const, marginBottom: 18 };
+const pageStyle = {
+  minHeight: "100vh",
+  background: "#f4f8f1",
+};
+
+const contentStyle = {
+  maxWidth: 520,
+  margin: "0 auto",
+  padding: 20,
+};
+
+const headerStyle = {
+  textAlign: "center" as const,
+  marginBottom: 18,
+};
+
 const titleStyle = {
   margin: 0,
   color: "#1f3d2b",
   fontSize: 34,
   fontWeight: 900,
 };
-const subTitleStyle = { color: "#5f6f64", lineHeight: 1.6 };
+
+const subTitleStyle = {
+  color: "#5f6f64",
+  lineHeight: 1.6,
+};
+
 const cardStyle = {
   background: "white",
   borderRadius: 24,
   padding: 24,
   boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
 };
+
 const labelStyle = {
   display: "block",
-  marginTop: 14,
+  marginTop: 16,
   marginBottom: 6,
   color: "#304b38",
   fontWeight: 800,
+  fontSize: 16,
 };
+
 const inputStyle = {
   width: "100%",
   padding: 14,
@@ -162,12 +217,37 @@ const inputStyle = {
   boxSizing: "border-box" as const,
   fontSize: 15,
 };
+
 const textareaStyle = {
   ...inputStyle,
   height: 110,
   resize: "none" as const,
 };
-const rowStyle = { display: "flex", gap: 10 };
+
+const guideTextStyle = {
+  margin: "0 0 10px",
+  color: "#6f7d72",
+  fontSize: 14,
+};
+
+const mapBoxStyle = {
+  height: 260,
+  borderRadius: 18,
+  overflow: "hidden",
+  border: "1px solid #d6ddd4",
+};
+
+const locationInfoStyle = {
+  marginTop: 10,
+  padding: 10,
+  borderRadius: 12,
+  background: "#eef7ed",
+  color: "#2f6f44",
+  fontSize: 14,
+  fontWeight: 700,
+  textAlign: "center" as const,
+};
+
 const previewStyle = {
   width: "100%",
   maxHeight: 240,
@@ -175,6 +255,7 @@ const previewStyle = {
   borderRadius: 16,
   marginTop: 12,
 };
+
 const buttonStyle = {
   width: "100%",
   padding: 16,
@@ -187,6 +268,7 @@ const buttonStyle = {
   fontWeight: 900,
   cursor: "pointer",
 };
+
 const subButtonStyle = {
   width: "100%",
   padding: 14,
