@@ -36,11 +36,10 @@ export default function HomePage() {
         </header>
 
         <div style={topTabStyle}>
-          <TopTab label="가이드" onClick={() => alert("가이드 페이지는 준비 중입니다.")} />
-          <TopTab label="파밍" active onClick={() => navigate("/home")} />
-          <TopTab label="마이" onClick={() => alert("마이 페이지는 준비 중입니다.")} />
-          <TopTab label="멘토" onClick={() => alert("멘토 페이지는 준비 중입니다.")} />
-          <TopTab label="로그" onClick={() => alert("로그 페이지는 준비 중입니다.")} />
+        <Route path="/guide" element={<GuidePage />} />
+        <Route path="/my" element={<MyPage />} />
+        <Route path="/mentor" element={<MentorPage />} />
+        <Route path="/log" element={<LogPage />} />
         </div>
 
         <section style={heroStyle}>
