@@ -1,4 +1,5 @@
 import TopTabs from "../components/TopTabs";
+import logo from "../assets/greenlink-logo.png";
 
 export default function GuidePage() {
   return (
@@ -164,46 +165,21 @@ export default function GuidePage() {
           <div style={storyCardStyle}>
             <h2 style={sectionTitleStyle}>로고 콘셉트</h2>
 
-            <p style={textStyle}>
-              GreenLink의 로고는
-              <br />
-              아직 개발 중입니다.
-              <br />
-              향후 로고에는
-              <br />
-              다음 의미를 담을 예정입니다.
-            </p>
+            <img
+              src={logo}
+              alt="GreenLink 로고"
+              style={logoImageStyle}
+            />
 
-            <ul style={listStyle}>
-              <li>
-                🌱 새싹:
-                <br />
-                유휴공간이 텃밭으로
-                <br />
-                바뀌는 변화
-              </li>
-              <li>
-                📍 위치:
-                <br />
-                공유텃밭을 지도 위에서
-                <br />
-                찾고 연결하는 기능
-              </li>
-              <li>
-                🔗 연결:
-                <br />
-                주민, 학생, 지역사회가
-                <br />
-                함께 참여하는 관계
-              </li>
-              <li>
-                🟢 순환:
-                <br />
-                재배–기록–수확–나눔으로
-                <br />
-                이어지는 지역 순환
-              </li>
-            </ul>
+            <p style={textStyle}>
+              GreenLink 로고는
+              <br />
+              자연과 연결의 의미를 담아,
+              <br />
+              공유텃밭을 통해 사람과 공간이
+              <br />
+              이어지는 플랫폼을 상징합니다.
+            </p>
           </div>
         </section>
       </div>
@@ -308,6 +284,7 @@ const textStyle = {
   lineHeight: 1.8,
   fontSize: 17,
   wordBreak: "keep-all" as const,
+  textAlign: "center" as const,
 };
 
 const gridStyle = {
@@ -367,19 +344,16 @@ const sectionTitleStyle = {
   fontWeight: 900,
 };
 
+const logoImageStyle = {
+  width: 190,
+  maxWidth: "80%",
+  display: "block",
+  margin: "0 auto 22px",
+  borderRadius: 22,
+};
+
 const dividerStyle = {
   height: 1,
   background: "#e2ece0",
   margin: "20px 0",
-};
-
-const listStyle = {
-  margin: "20px 0 0",
-  paddingLeft: 0,
-  listStylePosition: "inside" as const,
-  color: "#46564a",
-  lineHeight: 1.8,
-  fontSize: 16,
-  wordBreak: "keep-all" as const,
-  textAlign: "left" as const,
 };

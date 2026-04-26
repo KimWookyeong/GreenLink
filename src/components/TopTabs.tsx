@@ -14,7 +14,7 @@ export default function TopTabs() {
   ];
 
   return (
-    <nav style={topTabStyle}>
+    <nav style={tabBarStyle}>
       {tabs.map((tab) => {
         const active = location.pathname === tab.path;
 
@@ -24,11 +24,9 @@ export default function TopTabs() {
             onClick={() => navigate(tab.path)}
             style={{
               ...tabButtonStyle,
-              color: active ? "#2f6f44" : "#7d8b80",
-              fontWeight: active ? 900 : 700,
-              borderBottom: active
-                ? "4px solid #3f8f4f"
-                : "4px solid transparent",
+              color: active ? "#1f7a43" : "#6f7d72",
+              background: active ? "#e8f5e9" : "transparent",
+              border: active ? "1px solid #3f8f4f" : "1px solid transparent",
             }}
           >
             <span style={iconStyle}>{tab.icon}</span>
@@ -40,29 +38,29 @@ export default function TopTabs() {
   );
 }
 
-const topTabStyle = {
-  display: "flex",
+const tabBarStyle = {
+  display: "grid",
+  gridTemplateColumns: "repeat(6, 1fr)",
+  gap: 6,
   background: "#ffffff",
   borderRadius: 18,
+  padding: 8,
   marginBottom: 20,
-  overflowX: "auto" as const,
-  overflowY: "hidden" as const,
   boxShadow: "0 5px 16px rgba(0,0,0,0.06)",
 };
 
 const tabButtonStyle = {
-  flex: 1,
-  minWidth: 72,
-  padding: "12px 8px",
-  border: "none",
-  background: "transparent",
-  fontSize: 14,
+  height: 48,
+  borderRadius: 14,
+  border: "1px solid transparent",
+  fontSize: 13,
+  fontWeight: 800,
   cursor: "pointer",
-  whiteSpace: "nowrap" as const,
   display: "flex",
+  flexDirection: "column" as const,
   alignItems: "center",
   justifyContent: "center",
-  gap: 4,
+  gap: 2,
 };
 
 const iconStyle = {
