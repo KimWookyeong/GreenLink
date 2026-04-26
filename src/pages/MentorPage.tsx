@@ -43,7 +43,8 @@ export default function MentorPage() {
       answers: [
         {
           id: 1,
-          content: "사진상으로는 상처나 과숙 가능성도 있어 보여요. 잎 상태도 함께 확인해보면 좋겠습니다.",
+          content:
+            "사진상으로는 상처나 과숙 가능성도 있어 보여요. 잎 상태도 함께 확인해보면 좋겠습니다.",
           author: "텃밭멘토",
         },
       ],
@@ -166,15 +167,30 @@ export default function MentorPage() {
             />
 
             <label style={labelStyle}>사진 업로드</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleImageUpload(e.target.files?.[0])}
-            />
+            <div style={photoButtonRowStyle}>
+              <label style={photoButtonStyle}>
+                📷 카메라 촬영
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  onChange={(e) => handleImageUpload(e.target.files?.[0])}
+                  style={{ display: "none" }}
+                />
+              </label>
 
-            {image && (
-              <img src={image} alt="질문 사진 미리보기" style={previewImageStyle} />
-            )}
+              <label style={photoButtonStyle}>
+                🖼 갤러리 선택
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleImageUpload(e.target.files?.[0])}
+                  style={{ display: "none" }}
+                />
+              </label>
+            </div>
+
+            {image && <img src={image} alt="질문 사진 미리보기" style={previewImageStyle} />}
 
             <div style={formButtonRowStyle}>
               <button onClick={() => setShowForm(false)} style={cancelButtonStyle}>
@@ -188,95 +204,74 @@ export default function MentorPage() {
         )}
 
         <section style={questionListStyle}>
-          {questions.length === 0 ? (
-            <div style={emptyStyle}>
-              <div style={{ fontSize: 42 }}>🌱</div>
-              <p style={emptyTitleStyle}>아직 질문이 없습니다.</p>
-              <p style={emptyTextStyle}>텃밭 고민을 올려보세요.</p>
-            </div>
-          ) : (
-            questions.map((question) => (
-              <article key={question.id} style={questionCardStyle}>
-                <h2 style={questionTitleStyle}>Q. {question.title}</h2>
+          {questions.map((question) => (
+            <article key={question.id} style={questionCardStyle}>
+              <h2 style={questionTitleStyle}>Q. {question.title}</h2>
 
-                <p style={metaStyle}>
-                  {question.author} · {question.date}
-                </p>
+              <p style={metaStyle}>
+                {question.author} · {question.date}
+              </p>
 
-                {question.crop && <p style={cropStyle}>🌿 {question.crop}</p>}
+              {question.crop && <p style={cropStyle}>🌿 {question.crop}</p>}
 
-                <p style={questionTextStyle}>{question.content}</p>
+              <p style={questionTextStyle}>{question.content}</p>
 
-                {question.image && (
-                  <img src={question.image} alt="질문 첨부 이미지" style={questionImageStyle} />
-                )}
+              {question.image && (
+                <img src={question.image} alt="질문 첨부 이미지" style={questionImageStyle} />
+              )}
 
-                <button
-                  onClick={() =>
-                    setOpenId(openId === question.id ? null : question.id)
-                  }
-                  style={answerToggleStyle}
-                >
-                  💬 답변 ({question.answers.length})
-                </button>
+              <button
+                onClick={() => setOpenId(openId === question.id ? null : question.id)}
+                style={answerToggleStyle}
+              >
+                💬 답변 ({question.answers.length})
+              </button>
 
-                {openId === question.id && (
-                  <div style={answerAreaStyle}>
-                    {question.answers.length === 0 ? (
-                      <p style={emptyTextStyle}>아직 답변이 없습니다.</p>
-                    ) : (
-                      question.answers.map((answer) => (
-                        <div key={answer.id} style={answerItemStyle}>
-                          <p style={answerContentStyle}>{answer.content}</p>
-                          <p style={answerAuthorStyle}>답변자: {answer.author}</p>
-                        </div>
-                      ))
-                    )}
+              {openId === question.id && (
+                <div style={answerAreaStyle}>
+                  {question.answers.length === 0 ? (
+                    <p style={emptyTextStyle}>아직 답변이 없습니다.</p>
+                  ) : (
+                    question.answers.map((answer) => (
+                      <div key={answer.id} style={answerItemStyle}>
+                        <p style={answerContentStyle}>{answer.content}</p>
+                        <p style={answerAuthorStyle}>답변자: {answer.author}</p>
+                      </div>
+                    ))
+                  )}
 
-                    <div style={answerFormStyle}>
-                      <input
-                        style={inputStyle}
-                        placeholder="답변자 이름"
-                        value={answerAuthor}
-                        onChange={(e) => setAnswerAuthor(e.target.value)}
-                      />
+                  <input
+                    style={inputStyle}
+                    placeholder="답변자 이름"
+                    value={answerAuthor}
+                    onChange={(e) => setAnswerAuthor(e.target.value)}
+                  />
 
-                      <textarea
-                        style={answerTextareaStyle}
-                        placeholder="답변을 입력하세요."
-                        value={answerText}
-                        onChange={(e) => setAnswerText(e.target.value)}
-                      />
+                  <textarea
+                    style={answerTextareaStyle}
+                    placeholder="답변을 입력하세요."
+                    value={answerText}
+                    onChange={(e) => setAnswerText(e.target.value)}
+                  />
 
-                      <button
-                        onClick={() => handleAddAnswer(question.id)}
-                        style={answerSubmitStyle}
-                      >
-                        답변 등록
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </article>
-            ))
-          )}
+                  <button
+                    onClick={() => handleAddAnswer(question.id)}
+                    style={answerSubmitStyle}
+                  >
+                    답변 등록
+                  </button>
+                </div>
+              )}
+            </article>
+          ))}
         </section>
       </div>
     </div>
   );
 }
 
-const pageStyle = {
-  minHeight: "100vh",
-  background: "#f4f8f1",
-};
-
-const contentStyle = {
-  maxWidth: 760,
-  margin: "0 auto",
-  padding: 20,
-};
-
+const pageStyle = { minHeight: "100vh", background: "#f4f8f1" };
+const contentStyle = { maxWidth: 760, margin: "0 auto", padding: 20 };
 const pageHeaderStyle = {
   display: "flex",
   justifyContent: "space-between",
@@ -284,21 +279,8 @@ const pageHeaderStyle = {
   gap: 12,
   marginBottom: 16,
 };
-
-const titleStyle = {
-  margin: 0,
-  color: "#1f3d2b",
-  fontSize: 28,
-  fontWeight: 900,
-};
-
-const subTitleStyle = {
-  margin: "8px 0 0",
-  color: "#5f6f64",
-  fontSize: 14,
-  lineHeight: 1.5,
-};
-
+const titleStyle = { margin: 0, color: "#1f3d2b", fontSize: 28, fontWeight: 900 };
+const subTitleStyle = { margin: "8px 0 0", color: "#5f6f64", fontSize: 14, lineHeight: 1.5 };
 const askButtonStyle = {
   border: "none",
   background: "#3f8f4f",
@@ -309,7 +291,6 @@ const askButtonStyle = {
   cursor: "pointer",
   flexShrink: 0,
 };
-
 const formCardStyle = {
   background: "#ffffff",
   borderRadius: 22,
@@ -317,23 +298,8 @@ const formCardStyle = {
   marginBottom: 20,
   boxShadow: "0 6px 18px rgba(0,0,0,0.06)",
 };
-
-const formTitleStyle = {
-  margin: "0 0 14px",
-  color: "#21814d",
-  fontSize: 22,
-  fontWeight: 900,
-};
-
-const labelStyle = {
-  display: "block",
-  marginTop: 14,
-  marginBottom: 6,
-  color: "#304b38",
-  fontWeight: 800,
-  fontSize: 14,
-};
-
+const formTitleStyle = { margin: "0 0 14px", color: "#21814d", fontSize: 22, fontWeight: 900 };
+const labelStyle = { display: "block", marginTop: 14, marginBottom: 6, color: "#304b38", fontWeight: 800 };
 const inputStyle = {
   width: "100%",
   padding: 13,
@@ -343,20 +309,24 @@ const inputStyle = {
   fontSize: 15,
   outline: "none",
 };
-
-const textareaStyle = {
-  ...inputStyle,
-  height: 110,
-  resize: "none" as const,
+const textareaStyle = { ...inputStyle, height: 110, resize: "none" as const };
+const answerTextareaStyle = { ...inputStyle, height: 80, resize: "none" as const, marginTop: 10 };
+const photoButtonRowStyle = {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: 10,
+  marginTop: 8,
 };
-
-const answerTextareaStyle = {
-  ...inputStyle,
-  height: 80,
-  resize: "none" as const,
-  marginTop: 10,
+const photoButtonStyle = {
+  padding: 13,
+  borderRadius: 14,
+  border: "1px solid #3f8f4f",
+  background: "#ffffff",
+  color: "#2f6f44",
+  fontWeight: 900,
+  textAlign: "center" as const,
+  cursor: "pointer",
 };
-
 const previewImageStyle = {
   width: "100%",
   maxHeight: 280,
@@ -364,13 +334,7 @@ const previewImageStyle = {
   borderRadius: 16,
   marginTop: 12,
 };
-
-const formButtonRowStyle = {
-  display: "flex",
-  gap: 10,
-  marginTop: 18,
-};
-
+const formButtonRowStyle = { display: "flex", gap: 10, marginTop: 18 };
 const cancelButtonStyle = {
   flex: 1,
   padding: 13,
@@ -381,7 +345,6 @@ const cancelButtonStyle = {
   fontWeight: 800,
   cursor: "pointer",
 };
-
 const submitButtonStyle = {
   flex: 1,
   padding: 13,
@@ -392,32 +355,15 @@ const submitButtonStyle = {
   fontWeight: 900,
   cursor: "pointer",
 };
-
-const questionListStyle = {
-  display: "grid",
-  gap: 16,
-};
-
+const questionListStyle = { display: "grid", gap: 16 };
 const questionCardStyle = {
   background: "#ffffff",
   borderRadius: 22,
   padding: 22,
   boxShadow: "0 6px 18px rgba(0,0,0,0.06)",
 };
-
-const questionTitleStyle = {
-  margin: 0,
-  color: "#21814d",
-  fontSize: 22,
-  fontWeight: 900,
-};
-
-const metaStyle = {
-  margin: "8px 0 14px",
-  color: "#8a958c",
-  fontSize: 13,
-};
-
+const questionTitleStyle = { margin: 0, color: "#21814d", fontSize: 22, fontWeight: 900 };
+const metaStyle = { margin: "8px 0 14px", color: "#8a958c", fontSize: 13 };
 const cropStyle = {
   display: "inline-block",
   margin: "0 0 12px",
@@ -428,13 +374,7 @@ const cropStyle = {
   fontSize: 14,
   fontWeight: 800,
 };
-
-const questionTextStyle = {
-  margin: "0 0 14px",
-  color: "#405143",
-  lineHeight: 1.6,
-};
-
+const questionTextStyle = { margin: "0 0 14px", color: "#405143", lineHeight: 1.6 };
 const questionImageStyle = {
   width: "100%",
   maxHeight: 360,
@@ -442,7 +382,6 @@ const questionImageStyle = {
   borderRadius: 16,
   marginBottom: 14,
 };
-
 const answerToggleStyle = {
   border: "none",
   background: "#f1f5ef",
@@ -452,14 +391,7 @@ const answerToggleStyle = {
   fontWeight: 800,
   cursor: "pointer",
 };
-
-const answerAreaStyle = {
-  marginTop: 14,
-  padding: 14,
-  background: "#f8fbf7",
-  borderRadius: 16,
-};
-
+const answerAreaStyle = { marginTop: 14, padding: 14, background: "#f8fbf7", borderRadius: 16 };
 const answerItemStyle = {
   background: "#ffffff",
   borderRadius: 14,
@@ -467,23 +399,8 @@ const answerItemStyle = {
   marginBottom: 10,
   border: "1px solid #e4ece2",
 };
-
-const answerContentStyle = {
-  margin: 0,
-  color: "#405143",
-  lineHeight: 1.6,
-};
-
-const answerAuthorStyle = {
-  margin: "8px 0 0",
-  color: "#8a958c",
-  fontSize: 13,
-};
-
-const answerFormStyle = {
-  marginTop: 12,
-};
-
+const answerContentStyle = { margin: 0, color: "#405143", lineHeight: 1.6 };
+const answerAuthorStyle = { margin: "8px 0 0", color: "#8a958c", fontSize: 13 };
 const answerSubmitStyle = {
   width: "100%",
   marginTop: 10,
@@ -495,23 +412,4 @@ const answerSubmitStyle = {
   fontWeight: 900,
   cursor: "pointer",
 };
-
-const emptyStyle = {
-  textAlign: "center" as const,
-  padding: 42,
-  background: "#ffffff",
-  borderRadius: 22,
-  color: "#8a958c",
-};
-
-const emptyTitleStyle = {
-  margin: "10px 0 4px",
-  color: "#7b887e",
-  fontSize: 16,
-};
-
-const emptyTextStyle = {
-  margin: 0,
-  color: "#9aa39c",
-  fontSize: 14,
-};
+const emptyTextStyle = { margin: 0, color: "#9aa39c", fontSize: 14 };
